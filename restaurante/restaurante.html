@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFlash - Panel del Restaurante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #FF3D17 0%, #ff6347 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .status-toggle {
+            background: white;
+            color: #FF3D17;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .status-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .status-toggle.open {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-toggle.closed {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FF3D17 0%, #ff8c73 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: #FF3D17;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            background: transparent;
+            color: #666;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .nav-tab:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-tab.active {
+            background: #FF3D17;
+            color: white;
+        }
+
+        .notification-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Orders Section */
+        .orders-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 5px 20px rgba(255, 61, 23, 0.2);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-id {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .order-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .status-pending { background: #ffc107; color: #000; }
+        .status-preparing { background: #17a2b8; color: white; }
+        .status-ready { background: #28a745; color: white; }
+        .status-delivered { background: #6c757d; color: white; }
+
+        .order-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .order-items {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-accept { background: #28a745; color: white; }
+        .btn-accept:hover { background: #218838; transform: translateY(-2px); }
+
+        .btn-ready { background: #FF3D17; color: white; }
+        .btn-ready:hover { background: #e63310; transform: translateY(-2px); }
+
+        .btn-reject { background: #dc3545; color: white; }
+        .btn-reject:hover { background: #c82333; transform: translateY(-2px); }
+
+        /* Menu Management */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(255, 61, 23, 0.2);
+        }
+
+        .menu-image {
+            height: 180px;
+            background: linear-gradient(135deg, #FF3D17 0%, #ff8c73 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .menu-info {
+            padding: 1.5rem;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .availability-toggle {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .availability-toggle.unavailable {
+            background: #dc3545;
+        }
+
+        .menu-price {
+            color: #FF3D17;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .menu-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-edit {
+            flex: 1;
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-delete {
+            flex: 1;
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Add Product Form */
+        .add-product-btn {
+            background: #FF3D17;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+
+        .add-product-btn:hover {
+            background: #e63310;
+            transform: translateY(-2px);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #FF3D17;
+            background: none;
+            border: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF3D17;
+        }
+
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .emoji-option {
+            font-size: 2rem;
+            padding: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .emoji-option:hover,
+        .emoji-option.selected {
+            border-color: #FF3D17;
+            background: #fff5f3;
+        }
+
+        /* Restaurant Settings */
+        .settings-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .settings-card h3 {
+            color: #FF3D17;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item strong {
+            color: #FF3D17;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🍽️ FoodFlash - Panel Restaurante</div>
+            <div class="restaurant-info">
+                <div style="font-size: 1.1rem; font-weight: 500;">🏪 La Esquina del Sabor</div>
+                <button class="status-toggle open" id="status-toggle" onclick="toggleRestaurantStatus()">
+                    ✅ Abierto
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h3 id="total-orders">24</h3>
+                    <p>Pedidos Hoy</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-info">
+                    <h3 id="pending-orders">3</h3>
+                    <p>Pedidos Pendientes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="total-revenue">$480,000</h3>
+                    <p>Ingresos Hoy</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <h3>4.7</h3>
+                    <p>Calificación</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🍽️</div>
+                <div class="stat-info">
+                    <h3 id="menu-count">24</h3>
+                    <p>Productos en Menú</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('orders')">
+                📋 Pedidos <span class="notification-badge" id="orders-badge">3</span>
+            </button>
+            <button class="nav-tab" onclick="showTab('menu')">
+                🍔 Gestionar Menú
+            </button>
+            <button class="nav-tab" onclick="showTab('history')">
+                📊 Historial
+            </button>
+            <button class="nav-tab" onclick="showTab('settings')">
+                ⚙️ Configuración
+            </button>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders-tab" class="tab-content active">
+            <div class="orders-grid" id="orders-container"></div>
+        </div>
+
+        <!-- Menu Tab -->
+        <div id="menu-tab" class="tab-content">
+            <button class="add-product-btn" onclick="openAddProductModal()">
+                ➕ Agregar Nuevo Producto
+            </button>
+            <div class="menu-grid" id="menu-container"></div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history-tab" class="tab-content">
+            <div class="settings-card">
+                <h3>📊 Historial de Pedidos</h3>
+                <div id="history-container"></div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <div class="settings-card">
+                <h3>🏪 Información del Restaurante</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Nombre:</strong>
+                        La Esquina del Sabor
+                    </div>
+                    <div class="info-item">
+                        <strong>Teléfono:</strong>
+                        +57 321 555 1234
+                    </div>
+                    <div class="info-item">
+                        <strong>Dirección:</strong>
+                        Calle 25 #15-30, Centro
+                    </div>
+                    <div class="info-item">
+                        <strong>Horario:</strong>
+                        Lun-Dom: 10:00 AM - 10:00 PM
+                    </div>
+                    <div class="info-item">
+                        <strong>Email:</strong>
+                        contacto@esquinasabor.com
+                    </div>
+                    <div class="info-item">
+                        <strong>Categoría:</strong>
+                        Comida Rápida
+                    </div>
+                </div>
+                <div style="margin-top: 2rem;">
+                    <button class="btn btn-accept">✏️ Editar Información</button>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3>💳 Métodos de Pago</h3>
+                <div class="info-grid">
+                    <div class="info-item">✅ Efectivo</div>
+                    <div class="info-item">✅ Tarjeta de Crédito</div>
+                    <div class="info-item">✅ Tarjeta de Débito</div>
+                    <div class="info-item">✅ Transferencia</div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3>📈 Estadísticas del Mes</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Total Pedidos:</strong>
+                        487 pedidos
+                    </div>
+                    <div class="info-item">
+                        <strong>Ingresos Totales:</strong>
+                        $9,740,000
+                    </div>
+                    <div class="info-item">
+                        <strong>Producto Más Vendido:</strong>
+                        Hamburguesa Clásica
+                    </div>
+                    <div class="info-item">
+                        <strong>Calificación Promedio:</strong>
+                        4.7 ⭐
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Add/Edit Product -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProductModal()">×</button>
+            <h2 style="color: #FF3D17; margin-bottom: 1.5rem;" id="modal-title">Agregar Nuevo Producto</h2>
+            <form id="product-form" onsubmit="saveProduct(event)">
+                <div class="form-group">
+                    <label>Nombre del Producto:</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="product-category" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="hamburguesas">🍔 Hamburguesas</option>
+                        <option value="pizzas">🍕 Pizzas</option>
+                        <option value="mexicana">🌮 Comida Mexicana</option>
+                        <option value="pollo">🍗 Pollo</option>
+                        <option value="acompañamientos">🍟 Acompañamientos</option>
+                        <option value="bebidas">🥤 Bebidas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción:</label>
+                    <textarea id="product-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Precio ($):</label>
+                    <input type="number" id="product-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Selecciona un Emoji:</label>
+                    <div class="emoji-picker" id="emoji-picker"></div>
+                    <input type="hidden" id="product-emoji" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-accept" style="width: 100%;">
+                        💾 Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Datos
+        let orders = [
+            {
+                id: 'PD-001',
+                status: 'pending',
+                time: '14:30',
+                customer: 'María García',
+                phone: '+57 321 456 7890',
+                address: 'Calle 15 #23-45',
+                items: [
+                    { name: 'Hamburguesa Clásica', quantity: 2, price: 15000 },
+                    { name: 'Papas Fritas', quantity: 1, price: 8000 }
+                ],
+                total: 38000
+            },
+            {
+                id: 'PD-002',
+                status: 'preparing',
+                time: '14:25',
+                customer: 'Juan Pérez',
+                phone: '+57 314 789 0123',
+                address: 'Carrera 8 #45-12',
+                items: [
+                    { name: 'Pizza Pepperoni', quantity: 1, price: 25000 }
+                ],
+                total: 25000
+            },
+            {
+                id: 'PD-003',
+                status: 'pending',
+                time: '14:35',
+                customer: 'Ana Martínez',
+                phone: '+57 300 555 4433',
+                address: 'Avenida 5 #78-90',
+                items: [
+                    { name: 'Burrito Mexicano', quantity: 2, price: 18000 },
+                    { name: 'Coca-Cola', quantity: 2, price: 4000 }
+                ],
+                total: 44000
+            }
+        ];
+
+        let menuItems = [
+            { id: 1, name: 'Hamburguesa Clásica', category: 'hamburguesas', description: 'Carne jugosa con queso', price: 15000, emoji: '🍔', available: true },
+            { id: 2, name: 'Pizza Pepperoni', category: 'pizzas', description: 'Pizza con extra pepperoni', price: 25000, emoji: '🍕', available: true },
+            { id: 3, name: 'Burrito Mexicano', category: 'mexicana', description: 'Tortilla con carne y frijoles', price: 18000, emoji: '🌯', available: true },
+            { id: 4, name: 'Papas Fritas', category: 'acompañamientos', description: 'Papas crujientes', price: 8000, emoji: '🍟', available: true }
+        ];
+
+        let completedOrders = [];
+        let editingProductId = null;
+        let restaurantOpen = true;
+
+        const emojis = ['🍔', '🍕', '🌮', '🌯', '🍗', '🍟', '🥗', '🍠', '🥤', '🧃', '🍋', '🌭', '🍱', '🍜', '🍲', '🥙', '🥪', '🍞'];
+
+        // Render Orders
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            const activeOrders = orders.filter(o => o.status !== 'delivered');
+            
+            if (activeOrders.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; color: #666;">
+                        <div style="font-size: 4rem;">📭</div>
+                        <h3>No hay pedidos pendientes</h3>
+                        <p>Los nuevos pedidos aparecerán aquí</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activeOrders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">🎯 ${order.id}</div>
+                            <div style="color: #666; margin-top: 0.3rem;">⏰ ${order.time}</div>
+                        </div>
+                        <span class="order-status status-${order.status}">${getStatusLabel(order.status)}</span>
+                    </div>
+                    <div class="order-details">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div><strong>👤 Cliente:</strong> ${order.customer}</div>
+                            <div><strong>📞 Teléfono:</strong> ${order.phone}</div>
+                            <div style="grid-column: 1 / -1;"><strong>📍 Dirección:</strong> ${order.address}</div>
+                        </div>
+                        <div class="order-items">
+                            <strong>📦 Productos:</strong>
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="text-align: right; font-size: 1.3rem; font-weight: bold; color: #FF3D17;">
+                            Total: $${order.total.toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="order-actions">
+                        ${getOrderActions(order)}
+                    </div>
+                </div>
+            `).join('');
+
+            updateStats();
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                pending: '⏰ Pendiente',
+                preparing: '👨‍🍳 Preparando',
+                ready: '✅ Listo',
+                delivered: '✔️ Entregado'
+            };
+            return labels[status];
+        }
+
+        function getOrderActions(order) {
+            if (order.status === 'pending') {
+                return `
+                    <button class="btn btn-accept" onclick="acceptOrder('${order.id}')">✅ Aceptar Pedido</button>
+                    <button class="btn btn-reject" onclick="rejectOrder('${order.id}')">❌ Rechazar</button>
+                `;
+            } else if (order.status === 'preparing') {
+                return `
+                    <button class="btn btn-ready" onclick="markAsReady('${order.id}')">✅ Marcar como Listo</button>
+                `;
+            } else if (order.status === 'ready') {
+                return `
+                    <div style="background: #d4edda; padding: 1rem; border-radius: 10px; color: #155724;">
+                        <strong>✅ Pedido listo para recoger</strong><br>
+                        Esperando al repartidor...
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        function acceptOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'preparing';
+                renderOrders();
+                alert('✅ Pedido aceptado. ¡Comienza a prepararlo!');
+            }
+        }
+
+        function rejectOrder(orderId) {
+            if (confirm('¿Estás seguro de rechazar este pedido?')) {
+                orders = orders.filter(o => o.id !== orderId);

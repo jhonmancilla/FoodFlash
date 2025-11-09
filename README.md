@@ -7,14 +7,14 @@ Aplicación para gestión y pedidos rápidos de comida.
 |--------|-----|
 | Jhon Mancilla | Líder / Backend |
 | Ana Karina | Analista / Documentación |
+| David Salazar | Desarrollador / FullStar|
 
 ## 📄 Documentación
 - [Documentación Técnica V2](./docs/Documentacion_Tecnica_V2.pdf)
 - Diagramas en /docs/uml/
 
 ## 🛠️ Tecnologías
-- JavaFX
-- MySQL
+- Web (HTML, CSS Y JAVASCRIPTH)
 - Git & GitHub
 
 ## ▶️ Cómo ejecutar

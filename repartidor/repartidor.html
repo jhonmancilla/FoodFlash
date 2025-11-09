@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFlash - Panel del Repartidor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #FF3D17 0%, #ff6347 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-badge {
+            background: #28a745;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge.offline {
+            background: #6c757d;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #FF3D17 0%, #ff8c73 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            color: #FF3D17;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: white;
+            color: #FF3D17;
+            border: 2px solid #FF3D17;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 61, 23, 0.3);
+        }
+
+        .tab-btn.active {
+            background: #FF3D17;
+            color: white;
+        }
+
+        /* Orders Section */
+        .orders-container {
+            display: none;
+        }
+
+        .orders-container.active {
+            display: block;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .order-card:hover {
+            box-shadow: 0 5px 20px rgba(255, 61, 23, 0.2);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-id {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .order-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .order-status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .status-new {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-accepted {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .status-picked {
+            background: #007bff;
+            color: white;
+        }
+
+        .status-delivering {
+            background: #FF3D17;
+            color: white;
+        }
+
+        .status-delivered {
+            background: #28a745;
+            color: white;
+        }
+
+        .order-details {
+            margin: 1rem 0;
+        }
+
+        .customer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item strong {
+            color: #FF3D17;
+        }
+
+        .order-items {
+            margin: 1rem 0;
+        }
+
+        .order-items h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .item-list {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .order-total {
+            text-align: right;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #FF3D17;
+            margin-top: 1rem;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-accept {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-accept:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn-picked {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-picked:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-delivering {
+            background: #FF3D17;
+            color: white;
+        }
+
+        .btn-delivering:hover {
+            background: #e63310;
+            transform: translateY(-2px);
+        }
+
+        .btn-complete {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-complete:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-call {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-call:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .btn-navigate {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .btn-navigate:hover {
+            background: #5a32a3;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            position: relative;
+            top: -5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .customer-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Sound indicator */
+        .sound-indicator {
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">⚡ FoodFlash Delivery</div>
+            <div class="user-info">
+                <div class="status-badge" id="status-badge">
+                    <span class="sound-indicator"></span>
+                    <span>En Línea</span>
+                </div>
+                <div style="font-size: 1.2rem;">👤 Carlos Rodríguez</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h3 id="total-deliveries">12</h3>
+                    <p>Entregas Hoy</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3 id="total-earnings">$240,000</h3>
+                    <p>Ganado Hoy</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <h3>4.8</h3>
+                    <p>Calificación</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚴</div>
+                <div class="stat-info">
+                    <h3 id="active-orders">2</h3>
+                    <p>Pedidos Activos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('new')">
+                🔔 Nuevos Pedidos <span class="notification-badge" id="new-count">3</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('accepted')">
+                ✅ Aceptados <span class="notification-badge" id="accepted-count" style="background: #17a2b8;">1</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('delivering')">
+                🚚 En Camino <span class="notification-badge" id="delivering-count" style="background: #FF3D17;">1</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('completed')">
+                ✔️ Completados
+            </button>
+        </div>
+
+        <!-- Orders Containers -->
+        <div id="new-orders" class="orders-container active"></div>
+        <div id="accepted-orders" class="orders-container"></div>
+        <div id="delivering-orders" class="orders-container"></div>
+        <div id="completed-orders" class="orders-container"></div>
+    </div>
+
+    <script>
+        // Datos de ejemplo de pedidos
+        let orders = [
+            {
+                id: 'PD-001',
+                status: 'new',
+                time: '14:23',
+                customer: 'María García',
+                phone: '+57 321 456 7890',
+                address: 'Calle 15 #23-45, Barrio El Prado',
+                items: [
+                    { name: 'Hamburguesa Clásica', quantity: 2, price: 15000 },
+                    { name: 'Papas Fritas', quantity: 1, price: 8000 },
+                    { name: 'Coca-Cola', quantity: 2, price: 4000 }
+                ],
+                total: 46000,
+                distance: '2.3 km'
+            },
+            {
+                id: 'PD-002',
+                status: 'new',
+                time: '14:28',
+                customer: 'Juan Pérez',
+                phone: '+57 314 789 0123',
+                address: 'Carrera 8 #45-12, Centro',
+                items: [
+                    { name: 'Pizza Pepperoni', quantity: 1, price: 25000 },
+                    { name: 'Limonada', quantity: 1, price: 5000 }
+                ],
+                total: 30000,
+                distance: '1.8 km'
+            },
+            {
+                id: 'PD-003',
+                status: 'new',
+                time: '14:30',
+                customer: 'Ana Martínez',
+                phone: '+57 300 555 4433',
+                address: 'Avenida 5 #78-90, Norte',
+                items: [
+                    { name: 'Burrito Mexicano', quantity: 3, price: 18000 },
+                    { name: 'Nuggets de Pollo', quantity: 1, price: 14000 }
+                ],
+                total: 68000,
+                distance: '3.5 km'
+            },
+            {
+                id: 'PD-004',
+                status: 'accepted',
+                time: '14:10',
+                customer: 'Pedro López',
+                phone: '+57 315 222 3344',
+                address: 'Calle 50 #12-34, Sur',
+                items: [
+                    { name: 'Pizza Hawaiana', quantity: 1, price: 24000 },
+                    { name: 'Aros de Cebolla', quantity: 1, price: 9000 }
+                ],
+                total: 33000,
+                distance: '2.1 km'
+            },
+            {
+                id: 'PD-005',
+                status: 'delivering',
+                time: '13:45',
+                customer: 'Sofía Ramírez',
+                phone: '+57 318 666 7788',
+                address: 'Carrera 20 #30-15, Oeste',
+                items: [
+                    { name: 'Hamburguesa BBQ Bacon', quantity: 1, price: 22000 },
+                    { name: 'Papas Fritas', quantity: 1, price: 8000 },
+                    { name: 'Malteada', quantity: 1, price: 8000 }
+                ],
+                total: 38000,
+                distance: '1.5 km'
+            }
+        ];
+
+        // Renderizar pedidos
+        function renderOrders() {
+            const containers = {
+                'new': document.getElementById('new-orders'),
+                'accepted': document.getElementById('accepted-orders'),
+                'delivering': document.getElementById('delivering-orders'),
+                'completed': document.getElementById('completed-orders')
+            };
+
+            // Limpiar contenedores
+            Object.values(containers).forEach(container => container.innerHTML = '');
+
+            // Filtrar y renderizar pedidos por estado
+            Object.keys(containers).forEach(status => {
+                const filteredOrders = orders.filter(order => order.status === status);
+                
+                if (filteredOrders.length === 0) {
+                    containers[status].innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <h3>No hay pedidos aquí</h3>
+                            <p>Los pedidos ${getStatusText(status)} aparecerán aquí</p>
+                        </div>
+                    `;
+                } else {
+                    containers[status].innerHTML = filteredOrders.map(order => createOrderCard(order)).join('');
+                }
+            });
+
+            updateCounts();
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'new': 'nuevos',
+                'accepted': 'aceptados',
+                'delivering': 'en camino',
+                'completed': 'completados'
+            };
+            return texts[status] || '';
+        }
+
+        function createOrderCard(order) {
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">🎯 ${order.id}</div>
+                            <div class="order-time">⏰ ${order.time} - 📍 ${order.distance}</div>
+                        </div>
+                        <span class="order-status status-${order.status}">${getStatusLabel(order.status)}</span>
+                    </div>
+
+                    <div class="customer-info">
+                        <div class="info-item">
+                            <strong>👤 Cliente:</strong> ${order.customer}
+                        </div>
+                        <div class="info-item">
+                            <strong>📞 Teléfono:</strong> ${order.phone}
+                        </div>
+                        <div class="info-item" style="grid-column: 1 / -1;">
+                            <strong>📍 Dirección:</strong> ${order.address}
+                        </div>
+                    </div>
+
+                    <div class="order-items">
+                        <h4>📦 Productos:</h4>
+                        <div class="item-list">
+                            ${order.items.map(item => `
+                                <div class="item">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="order-total">Total: $${order.total.toLocaleString()}</div>
+
+                    <div class="order-actions">
+                        ${getOrderActions(order)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function getStatusLabel(status) {
+            const labels = {
+                'new': '🔔 Nuevo',
+                'accepted': '✅ Aceptado',
+                'picked': '📦 Recogido',
+                'delivering': '🚚 En Camino',
+                'delivered': '✔️ Entregado'
+            };
+            return labels[status] || status;
+        }
+
+        function getOrderActions(order) {
+            switch(order.status) {
+                case 'new':
+                    return `
+                        <button class="btn btn-accept" onclick="acceptOrder('${order.id}')">✅ Aceptar Pedido</button>
+                        <button class="btn btn-reject" onclick="rejectOrder('${order.id}')">❌ Rechazar</button>
+                        <button class="btn btn-call" onclick="callCustomer('${order.phone}')">📞 Llamar</button>
+                    `;
+                case 'accepted':
+                    return `
+                        <button class="btn btn-picked" onclick="markAsPicked('${order.id}')">📦 Recogido</button>
+                        <button class="btn btn-call" onclick="callCustomer('${order.phone}')">📞 Llamar</button>
+                        <button class="btn btn-navigate" onclick="navigate('${order.address}')">🗺️ Navegar</button>
+                    `;
+                case 'delivering':
+                    return `
+                        <button class="btn btn-complete" onclick="completeOrder('${order.id}')">✔️ Entregado</button>
+                        <button class="btn btn-call" onclick="callCustomer('${order.phone}')">📞 Llamar</button>
+                        <button class="btn btn-navigate" onclick="navigate('${order.address}')">🗺️ Navegar</button>
+                    `;
+                default:
+                    return '';
+            }
+        }
+
+        // Funciones de acciones
+        function acceptOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'accepted';
+                renderOrders();
+                showNotification('✅ Pedido aceptado', 'success');
+            }
+        }
+
+        function rejectOrder(orderId) {
+            if (confirm('¿Estás seguro de rechazar este pedido?')) {
+                orders = orders.filter(o => o.id !== orderId);
+                renderOrders();
+                showNotification('❌ Pedido rechazado', 'error');
+            }
+        }
+
+        function markAsPicked(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'delivering';
+                renderOrders();
+                showNotification('🚚 Pedido en camino', 'info');
+            }
+        }
+
+        function completeOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'completed';
+                renderOrders();
+                showNotification('✔️ Pedido completado', 'success');
+                
+                // Actualizar estadísticas
+                const totalDeliveries = document.getElementById('total-deliveries');
+                totalDeliveries.textContent = parseInt(totalDeliveries.textContent) + 1;
+                
+                const totalEarnings = document.getElementById('total-earnings');
+                const currentEarnings = parseInt(totalEarnings.textContent.replace(/[$,]/g, ''));
+                totalEarnings.textContent = '$' + (currentEarnings + order.total).toLocaleString();
+            }
+        }
+
+        function callCustomer(phone) {
+            alert(`📞 Llamando a ${phone}...`);
+            window.location.href = `tel:${phone}`;
+        }
+
+        function navigate(address) {
+            alert(`🗺️ Abriendo navegación a: ${address}`);
+            // En producción, esto abriría Google Maps o Waze
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(address)}`, '_blank');
+        }
+
+        function showNotification(message, type) {
+            alert(message);
+        }
+
+        function updateCounts() {
+            const newCount = orders.filter(o => o.status === 'new').length;
+            const acceptedCount = orders.filter(o => o.status === 'accepted').length;
+            const deliveringCount = orders.filter(o => o.status === 'delivering').length;
+            const activeCount = acceptedCount + deliveringCount;
+
+            document.getElementById('new-count').textContent = newCount;
+            document.getElementById('accepted-count').textContent = acceptedCount;
+            document.getElementById('delivering-count').textContent = deliveringCount;
+            document.getElementById('active-orders').textContent = activeCount;
+
+            // Ocultar badges si es 0
+            if (newCount === 0) document.getElementById('new-count').style.display = 'none';
+            if (acceptedCount === 0) document.getElementById('accepted-count').style.display = 'none';
+            if (deliveringCount === 0) document.getElementById('delivering-count').style.display = 'none';
+        }
+
+        function showTab(tabName) {
+            // Actualizar botones
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Mostrar contenedor correspondiente
+            document.querySelectorAll('.orders-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-orders`).classList.add('active');
+        }
+
+        // Simular llegada de nuevos pedidos
+        function simulateNewOrder() {
+            const newOrder = {
+                id: `PD-${String(orders.length + 1).padStart(3, '0')}`,
+                status: 'new',
+                time: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+                customer: 'Cliente Nuevo',
+                phone: '+57 300 123 4567',
+                address: 'Dirección de ejemplo',
+                items: [
+                    { name: 'Producto ejemplo', quantity: 1, price: 15000 }
+                ],
+                total: 15000,
+                distance: '2.0 km'
+            };
+            
+            orders.unshift(newOrder);
+            renderOrders();
+            showNotification('🔔 ¡Nuevo pedido recibido!', 'info');
+        }
+
+        // Inicializar
+        renderOrders();
+
+        // Simular nuevo pedido cada 30 segundos (opcional, para pruebas)
+        // setInterval(simulateNewOrder, 30000);
+    </script>
+</body>
+</html>

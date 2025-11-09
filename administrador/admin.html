@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFlash - Panel de Administrador</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #FF3D17 0%, #ff6347 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .admin-badge {
+            background: #ffc107;
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(255, 61, 23, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FF3D17 0%, #ff8c73 100%);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            color: #FF3D17;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            background: transparent;
+            color: #666;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .nav-tab:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-tab.active {
+            background: #FF3D17;
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Search and Filter */
+        .toolbar {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #FF3D17;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .filter-select {
+            padding: 0.8rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: #FF3D17;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #e63310;
+            transform: translateY(-2px);
+        }
+
+        /* Table */
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #FF3D17 0%, #ff6347 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #fff5f3;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-blocked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #138496;
+            transform: scale(1.05);
+        }
+
+        .btn-block {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .btn-block:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .btn-activate {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-activate:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 2rem;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #FF3D17;
+            background: none;
+            border: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FF3D17;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #FF3D17;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #e63310;
+        }
+
+        /* Card View for Mobile */
+        .card-view {
+            display: none;
+        }
+
+        .user-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .user-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .user-card-info {
+            display: grid;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .data-table {
+                display: none;
+            }
+
+            .card-view {
+                display: block;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">👑 FoodFlash - Panel Administrador</div>
+            <div class="admin-info">
+                <div class="admin-badge">🛡️ ADMIN</div>
+                <div style="font-size: 1.1rem;">Admin Principal</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3 id="total-customers">1,234</h3>
+                    <p>Clientes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏪</div>
+                <div class="stat-info">
+                    <h3 id="total-restaurants">45</h3>
+                    <p>Restaurantes</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚴</div>
+                <div class="stat-info">
+                    <h3 id="total-drivers">87</h3>
+                    <p>Repartidores</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h3 id="total-orders">5,678</h3>
+                    <p>Pedidos Totales</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <h3>$85M</h3>
+                    <p>Ingresos Totales</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🍔</div>
+                <div class="stat-info">
+                    <h3 id="total-products">892</h3>
+                    <p>Productos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('customers')">👥 Clientes</button>
+            <button class="nav-tab" onclick="showTab('restaurants')">🏪 Restaurantes</button>
+            <button class="nav-tab" onclick="showTab('drivers')">🚴 Repartidores</button>
+            <button class="nav-tab" onclick="showTab('products')">🍔 Productos</button>
+            <button class="nav-tab" onclick="showTab('orders')">📦 Pedidos</button>
+            <button class="nav-tab" onclick="showTab('reports')">📊 Reportes</button>
+        </div>
+
+        <!-- Customers Tab -->
+        <div id="customers-tab" class="tab-content active">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar clientes..." onkeyup="searchTable('customers-table', this.value)">
+                </div>
+                <select class="filter-select" onchange="filterByStatus('customers', this.value)">
+                    <option value="all">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="blocked">Bloqueados</option>
+                </select>
+                <button class="btn-add" onclick="openModal('customer')">➕ Agregar Cliente</button>
+            </div>
+
+            <div class="data-table">
+                <table id="customers-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Pedidos</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customers-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="card-view" id="customers-cards"></div>
+        </div>
+
+        <!-- Restaurants Tab -->
+        <div id="restaurants-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar restaurantes..." onkeyup="searchTable('restaurants-table', this.value)">
+                </div>
+                <select class="filter-select" onchange="filterByStatus('restaurants', this.value)">
+                    <option value="all">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="blocked">Bloqueados</option>
+                </select>
+                <button class="btn-add" onclick="openModal('restaurant')">➕ Agregar Restaurante</button>
+            </div>
+
+            <div class="data-table">
+                <table id="restaurants-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Teléfono</th>
+                            <th>Productos</th>
+                            <th>Calificación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="restaurants-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="card-view" id="restaurants-cards"></div>
+        </div>
+
+        <!-- Drivers Tab -->
+        <div id="drivers-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar repartidores..." onkeyup="searchTable('drivers-table', this.value)">
+                </div>
+                <select class="filter-select" onchange="filterByStatus('drivers', this.value)">
+                    <option value="all">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="blocked">Bloqueados</option>
+                </select>
+                <button class="btn-add" onclick="openModal('driver')">➕ Agregar Repartidor</button>
+            </div>
+
+            <div class="data-table">
+                <table id="drivers-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Entregas</th>
+                            <th>Calificación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="drivers-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="card-view" id="drivers-cards"></div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar productos..." onkeyup="searchTable('products-table', this.value)">
+                </div>
+                <select class="filter-select" onchange="filterProducts(this.value)">
+                    <option value="all">Todas las categorías</option>
+                    <option value="hamburguesas">Hamburguesas</option>
+                    <option value="pizzas">Pizzas</option>
+                    <option value="mexicana">Comida Mexicana</option>
+                    <option value="pollo">Pollo</option>
+                    <option value="bebidas">Bebidas</option>
+                </select>
+            </div>
+
+            <div class="data-table">
+                <table id="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Producto</th>
+                            <th>Restaurante</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Ventas</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="card-view" id="products-cards"></div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders-tab" class="tab-content">
+            <div class="toolbar">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Buscar pedidos..." onkeyup="searchTable('orders-table', this.value)">
+                </div>
+                <select class="filter-select" onchange="filterOrders(this.value)">
+                    <option value="all">Todos los estados</option>
+                    <option value="pending">Pendientes</option>
+                    <option value="preparing">Preparando</option>
+                    <option value="delivering">En camino</option>
+                    <option value="delivered">Entregados</option>
+                </select>
+            </div>
+
+            <div class="data-table">
+                <table id="orders-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Restaurante</th>
+                            <th>Repartidor</th>
+                            <th>Total</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="card-view" id="orders-cards"></div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports-tab" class="tab-content">
+            <div style="background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h2 style="color: #FF3D17; margin-bottom: 2rem;">📊 Reportes y Estadísticas</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-info">
+                            <h3>+23%</h3>
+                            <p>Crecimiento Mensual</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <h3>4.7</h3>
+                            <p>Calificación Promedio</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <h3>28 min</h3>
+                            <p>Tiempo Promedio</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💵</div>
+                        <div class="stat-info">
+                            <h3>$45K</h3>
+                            <p>Ticket Promedio</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Top 5 Restaurantes</h3>
+                    <div id="top-restaurants"></div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Top 5 Productos Más Vendidos</h3>
+                    <div id="top-products"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="main-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h2 style="color: #FF3D17; margin-bottom: 1.5rem;" id="modal-title">Agregar Usuario</h2>
+            <form id="main-form" onsubmit="handleSubmit(event)">
+                <div id="form-fields"></div>
+                <button type="submit" class="btn-submit">💾 Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    

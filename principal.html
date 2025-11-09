@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- Google Fonts y Font Awesome -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodFlash - Comida Rápida a tu Puerta</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+ 
+    <link rel="stylesheet" href="./static/index.css">
+    <link rel="icon" href="favicon.png">
+    
+    <style>
+        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header y Navegación */
+        header {
+        background: white;
+        color: #FF3D17;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+       }
+    .nav-links a {
+        color: #333;
+      }
+        .cart-btn {
+       background: #FF3D17;
+       color: white;
+      }
+
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .cart-btn {
+            background: white;
+            color: #FF3D17;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .cart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+         background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url('./static/images/bg-food.jpg') center/cover no-repeat;
+         color: white;
+         height: 90vh;
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         text-align: center;
+         }
+         .hero h1 {
+         font-size: 4rem;
+         font-weight: 800;
+        }
+
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s;
+        }
+
+        .cta-btn {
+            background: white;
+            color: #FF3D17;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: fadeInUp 1.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* Sección de Productos */
+        .products {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #FF3D17;
+            margin-bottom: 2rem;
+        }
+
+        /* Pestañas de Categorías */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            background: white;
+            color: #FF3D17;
+            border: 2px solid #FF3D17;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .category-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 61, 23, 0.3);
+        }
+
+        .category-tab.active {
+            background: #FF3D17;
+            color: white;
+        }
+
+        .category-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .category-content.active {
+            display: block;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .category-header h3 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .category-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card {
+        border-radius: 20px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+        .product-card:hover {
+         transform: translateY(-8px);
+         box-shadow: 0 8px 20px rgba(255, 61, 23, 0.2);
+    }
+         .product-info {
+         font-family: 'Poppins', sans-serif;
+      }
+
+
+        .product-name {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: #FF3D17;
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            background: #FF3D17;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #e63310;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+        background: #222;
+        color: #eee;
+       }
+      footer p a {
+        color: #FF3D17;
+        text-decoration: none;
+         }
+
+
+        /* Animaciones */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Carrito Modal */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+        }
+
+        .cart-content {
+            background: white;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 2rem;
+            border-radius: 15px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-cart {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #FF3D17;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-btn {
+            background: #FF3D17;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #e63310;
+            transform: scale(1.1);
+        }
+
+        .quantity-display {
+            min-width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .cart-total {
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF3D17;
+            text-align: right;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .category-tabs {
+                gap: 0.5rem;
+            }
+
+            .category-tab {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* --- Estilos adicionales para una apariencia más profesional --- */
+
+/* Fondo general suave */
+body {
+  background-color: #fafafa;
+}
+
+/* Header más moderno al hacer scroll */
+header.scrolled {
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+/* Navegación: efectos y espaciado más equilibrado */
+.nav-links a {
+  color: #333;
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #FF3D17;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Hero: mejora de legibilidad y contraste */
+.hero h1 {
+  color: #FF6600; /* Naranja más intenso */
+    text-shadow: 0 3px 10px rgba(0,0,0,0.4); /* Sombra negra suave */
+}
+
+.hero p {
+  color: #f4f4f4;
+}
+
+/* Botones generales */
+button, .cta-btn, .add-to-cart {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover, .cta-btn:hover, .add-to-cart:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Tarjetas de producto con transición más fluida */
+.product-card {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(255, 61, 23, 0.2);
+}
+
+/* Footer más limpio y legible */
+footer {
+  background-color: #111;
+  color: #ccc;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #FF3D17;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+footer a:hover {
+  color: #ff6b4a;
+}
+
+/* Transición suave para todo */
+* {
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav style="background-color:#000; display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem;">
+    <div class="logo" style="color:#FF3D17; font-weight:800; font-size:1.5rem;">
+        ⚡ FoodFlash
+    </div>
+
+    <ul class="nav-links" style="display:flex; list-style:none; gap:1.5rem; margin:0; padding:0;">
+        <li><a href="#inicio" style="font-weight:800; color:#fff; text-decoration:none;">Inicio</a></li>
+        <li><a href="#menu" style="font-weight:800; color:#fff; text-decoration:none;">Menú</a></li>
+        <li><a href="#contacto" style="font-weight:800; color:#fff; text-decoration:none;">Contacto</a></li>
+        <li><a href="index.html" style="font-weight:800; color:#fff; text-decoration:none;">Iniciar Session</a></li>
+    </ul>
+
+    <button class="cart-btn" onclick="toggleCart()" style="font-weight:800; color:#FF3D17; background:none; border:none; cursor:pointer; font-size:1rem;">
+        🛒 Carrito (<span id="cart-count">0</span>)
+    </button>
+</nav>
+
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <h1>¡La experiencia que tu paladar estaba esperando!</h1>
+        <p style="color: #ffffff; font-family: 'Arial', sans-serif; font-size: 1.5rem; line-height: 1.6; font-weight: 600;">
+    Disfruta de las mejores hamburguesas, pizzas, pollos y más, preparados con ingredientes frescos y llenos de sabor. 
+    Desde tu comida favorita hasta los acompañamientos y bebidas que te encantan, todo llega rápido y directo a tu puerta, 
+    para que cada bocado sea una explosión de sabor sin esperar. ¡FoodFlash, tu hambre no tiene que esperar!
+</p>
+        <button class="cta-btn" style="font-weight: 800;" onclick="document.getElementById('menu').scrollIntoView({behavior: 'smooth'})">
+    Ver Menú
+</button>
+
+    </section>
+
+    <!-- Productos por Categorías -->
+    <section class="products" id="menu">
+        <h2 class="section-title" style="font-weight: 800;">Nuestro Menú</h2>
+        
+        <!-- Pestañas de Categorías -->
+        <!-- Pestañas de Categorías -->
+<!-- Pestañas de Categorías -->
+
+<div class="category-tabs">
+    <button class="category-tab active" onclick="showCategory('todas')">
+        <img src="imgs/todas.jpg" alt="Todas">
+        <span>Todas</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('hamburguesas')">
+        <img src="imgs/hamburguesa.jpg" alt="Hamburguesas">
+        <span>Hamburguesas</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('pizzas')">
+        <img src="imgs/pizza.jpg" alt="Pizzas">
+        <span>Pizzas</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('mexicana')">
+        <img src="imgs/mexicana.jpg" alt="Comida Mexicana">
+        <span>Comida Mexicana</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('pollo')">
+        <img src="imgs/pollo.jpg" alt="Pollo">
+        <span>Pollo</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('acompañamientos')">
+        <img src="imgs/acompanamientos.jpg" alt="Acompañamientos">
+        <span>Adiciones</span>
+    </button>
+
+    <button class="category-tab" onclick="showCategory('bebidas')">
+        <img src="imgs/bebida.jpg" alt="Bebidas">
+        <span>Bebidas</span>
+    </button>
+</div>
+
+
+
+        <!-- Contenido por Categoría -->
+        <div id="categories-container"></div>
+    </section>
+
+    <!-- Modal del Carrito -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <span class="close-cart" onclick="toggleCart()">×</span>
+            <h2 style="color: #FF3D17; margin-bottom: 1rem;">Tu Carrito</h2>
+            <div id="cart-items"></div>
+            <div class="cart-total">Total: $<span id="cart-total">0</span></div>
+
+<div class="customer-info" style="margin-top: 1rem;">
+    <h3 style="color:#333; font-size:1.2rem;">Datos del cliente</h3>
+    <input type="text" id="cliente-nombre" placeholder="Nombre completo" style="width:100%; padding:0.5rem; margin:0.3rem 0; border-radius:8px; border:1px solid #ccc;">
+    <input type="text" id="cliente-direccion" placeholder="Dirección de entrega" style="width:100%; padding:0.5rem; margin:0.3rem 0; border-radius:8px; border:1px solid #ccc;">
+    <input type="text" id="cliente-telefono" placeholder="Número de contacto" style="width:100%; padding:0.5rem; margin:0.3rem 0; border-radius:8px; border:1px solid #ccc;">
+
+    <div class="payment-method" style="margin-top: 1rem;">
+        <h3 style="color:#333; font-size:1.2rem;">Método de pago</h3>
+        <label style="display:block; margin:0.3rem 0;">
+            <input type="radio" name="metodo-pago" value="Efectivo" checked> Efectivo
+        </label>
+        <label style="display:block; margin:0.3rem 0;">
+            <input type="radio" name="metodo-pago" value="Tarjeta"> Tarjeta
+        </label>
+        <label style="display:block; margin:0.3rem 0;">
+            <input type="radio" name="metodo-pago" value="PSE"> PSE (transferencia)
+        </label>
+    </div>
+</div>
+
+<button id="btnPedido" class="add-to-cart">Realizar Pedido</button>
+
+
+        </div> <!-- Cierre del modal del carrito -->
+</div> <!-- Cierre del contenedor del carrito -->
+
+<!-- 🔽 Sección de Contacto — ahora sí al final de la página -->
+<section id="contacto" style="background-color:#fff; padding:4rem 2rem; border-top:2px solid #FF3D17;">
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem;">
+  <div style="flex:1 1 300px; background:#fafafa; padding:1.5rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; color:orange !important; font-weight:600; overflow:hidden;">
+      <i class="fa-solid fa-location-dot" style="font-size:2rem; color:#FF3D17;"></i>
+      <h3 style="margin-top:1rem; font-weight:700; color:orange !important;">Dirección</h3>
+      <p style="margin:0; word-wrap:break-word; color:orange !important;">Calle 45 #23-17, Cali, Colombia</p>
+  </div>
+
+  <div style="flex:1 1 300px; background:#fafafa; padding:1.5rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; color:orange !important; font-weight:600; overflow:hidden;">
+      <i class="fa-solid fa-phone" style="font-size:2rem; color:#FF3D17;"></i>
+      <h3 style="margin-top:1rem; font-weight:700; color:orange !important;">Teléfonos</h3>
+      <p style="margin:0; color:orange !important;">+57 310 656 3386</p>
+      <p style="margin:0; color:orange !important;">+57 312 789 4411</p>
+  </div>
+
+  <div style="flex:1 1 300px; background:#fafafa; padding:1.5rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); text-align:center; color:orange !important; font-weight:600; overflow:hidden;">
+      <i class="fa-solid fa-envelope" style="font-size:2rem; color:#FF3D17;"></i>
+      <h3 style="margin-top:1rem; font-weight:700; color:orange !important;">Correo Electrónico</h3>
+      <p style="margin:0; color:orange !important;">info@foodflash.com</p>
+      <p style="margin:0; color:orange !important;">pedidos@foodflash.com</p>
+  </div>
+</div>
+
+
+<div style="margin-top:3rem; text-align:center;">
+  <h3 style="color:#FF3D17;">Síguenos en redes</h3>
+  <div style="margin-top:1rem; display:flex; justify-content:center; gap:1rem;">
+      <a href="#" style="color:#FF3D17; font-size:1.5rem;"><i class="fa-brands fa-facebook"></i></a>
+      <a href="#" style="color:#FF3D17; font-size:1.5rem;"><i class="fa-brands fa-instagram"></i></a>
+      <a href="#" style="color:#FF3D17; font-size:1.5rem;"><i class="fa-brands fa-x-twitter"></i></a>
+  </div>
+</div>
+
+<div style="margin-top:3rem; text-align:center;">
+  <h3 style="color:#FF3D17;">Horarios de Atención</h3>
+  <p style="color:#555; margin:0;">Lunes a Domingo: 10:00 a.m. - 10:00 p.m.</p>
+</div>
+
+</section>
+
+<!-- Footer -->
+<footer id="footer">
+  <p>&copy; 2025 FoodFlash. Todos los derechos reservados.</p>
+  <p>📞 Contacto: +57 310 656 3386 | 📧 info@foodflash.com</p>
+</footer>
+
+                
+
+    <script src="./static/index.js"></script>
+
+    <script>
+        // Datos de productos por categoría
+        const productsByCategory = {
+            hamburguesas: {
+                name: "Hamburguesas",
+                description: "Hamburguesas jugosas preparadas al momento",
+                products: [
+                    { id: 1, name: "Hamburguesa Clásica", description: "Carne jugosa con queso, lechuga y tomate", price: 15000, emoji: "🍔" },
+                    { id: 2, name: "Doble Carne", description: "Doble porción de carne con queso cheddar", price: 20000, emoji: "🍔" },
+                    { id: 3, name: "BBQ Bacon", description: "Con tocino, salsa BBQ y cebolla caramelizada", price: 22000, emoji: "🍔" },
+                    { id: 4, name: "Vegetariana", description: "Hamburguesa de lentejas con vegetales frescos", price: 16000, emoji: "🍔" }
+                ]
+            },
+            pizzas: {
+                name: "Pizzas",
+                description: "Pizzas artesanales con ingredientes frescos",
+                products: [
+                    { id: 11, name: "Pizza Pepperoni", description: "Pizza tradicional con extra pepperoni", price: 25000, emoji: "🍕" },
+                    { id: 12, name: "Pizza Hawaiana", description: "Jamón, piña y extra queso mozzarella", price: 24000, emoji: "🍕" },
+                    { id: 13, name: "Cuatro Quesos", description: "Mozzarella, parmesano, gorgonzola y provolone", price: 28000, emoji: "🍕" },
+                    { id: 14, name: "Vegetariana", description: "Champiñones, pimientos, cebolla y aceitunas", price: 23000, emoji: "🍕" }
+                ]
+            },
+            mexicana: {
+                name: "Comida Mexicana",
+                description: "Sabores auténticos de México",
+                products: [
+                    { id: 21, name: "Burrito Mexicano", description: "Tortilla rellena con carne y frijoles", price: 18000, emoji: "🌯" },
+                    { id: 22, name: "Tacos al Pastor", description: "3 tacos con carne marinada y piña", price: 16000, emoji: "🌮" },
+                    { id: 23, name: "Quesadilla", description: "Tortilla con queso fundido y pollo", price: 14000, emoji: "🌮" },
+                    { id: 24, name: "Nachos Supreme", description: "Nachos con carne, queso y guacamole", price: 17000, emoji: "🌮" }
+                ]
+            },
+            pollo: {
+                name: "Pollo",
+                description: "Pollo crujiente y sabroso",
+                products: [
+                    { id: 31, name: "Nuggets de Pollo", description: "10 piezas de pollo crujiente", price: 14000, emoji: "🍗" },
+                    { id: 32, name: "Alitas Picantes", description: "12 alitas con salsa buffalo", price: 19000, emoji: "🍗" },
+                    { id: 33, name: "Pollo Asado", description: "Medio pollo con ensalada", price: 22000, emoji: "🍗" },
+                    { id: 34, name: "Tiras de Pollo", description: "8 tiras empanizadas con salsas", price: 16000, emoji: "🍗" }
+                ]
+            },
+            acompañamientos: {
+                name: "Adiciones",
+                description: "El complemento perfecto para tu comida",
+                products: [
+                    { id: 41, name: "Papas Fritas", description: "Papas crujientes con sal marina", price: 8000, emoji: "🍟" },
+                    { id: 42, name: "Aros de Cebolla", description: "Crujientes aros empanizados", price: 9000, emoji: "🧅" },
+                    { id: 43, name: "Ensalada César", description: "Lechuga fresca con aderezo césar", price: 10000, emoji: "🥗" },
+                    { id: 44, name: "Yuca Frita", description: "Yuca dorada y crujiente", price: 8500, emoji: "🍠" }
+                ]
+            },
+            bebidas: {
+                name: "Bebidas",
+                description: "Refrescantes bebidas para acompañar",
+                products: [
+                    { id: 51, name: "Coca-Cola", description: "Gaseosa 500ml", price: 4000, emoji: "🥤" },
+                    { id: 52, name: "Jugo Natural", description: "Jugo de fruta fresca 400ml", price: 6000, emoji: "🧃" },
+                    { id: 53, name: "Limonada", description: "Limonada natural con hierbabuena", price: 5000, emoji: "🍋" },
+                    { id: 54, name: "Malteada", description: "Malteada de chocolate o vainilla", price: 8000, emoji: "🥤" }
+                ]
+            }
+        };
+
+        let cart = [];
+        let currentCategory = 'todas';
+
+        // Renderizar todas las categorías
+        function renderAllCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            // Crear vista de "Todas"
+            const allDiv = document.createElement('div');
+            allDiv.className = 'category-content active';
+            allDiv.id = 'category-todas';
+
+            Object.keys(productsByCategory).forEach(categoryKey => {
+                const category = productsByCategory[categoryKey];
+                const categorySection = document.createElement('div');
+                categorySection.style.marginBottom = '3rem';
+                
+                categorySection.innerHTML = `
+                    <div class="category-header">
+                        <h3>${category.name}</h3>
+                        <p>${category.description}</p>
+                    </div>
+                    <div class="product-grid">
+                        ${category.products.map(product => createProductCard(product)).join('')}
+                    </div>
+                `;
+                
+                allDiv.appendChild(categorySection);
+            });
+
+            container.appendChild(allDiv);
+
+            // Crear vistas individuales por categoría
+            Object.keys(productsByCategory).forEach(categoryKey => {
+                const category = productsByCategory[categoryKey];
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-content';
+                categoryDiv.id = `category-${categoryKey}`;
+                
+                categoryDiv.innerHTML = `
+                    <div class="category-header">
+                        <h3>${category.name}</h3>
+                        <p>${category.description}</p>
+                    </div>
+                    <div class="product-grid">
+                        ${category.products.map(product => createProductCard(product)).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(categoryDiv);
+            });
+        }
+
+        // Crear tarjeta de producto
+        function createProductCard(product) {
+    const itemInCart = cart.find(item => item.id === product.id);
+    const quantity = itemInCart ? itemInCart.quantity : 0;
+
+    return `
+        <div class="product-card" id="product-${product.id}">
+            <div class="product-info">
+                <h3 class="product-name" style="color:#FF3D17; font-weight:800;">${product.name}</h3>
+                <p class="product-description" style="color:white; font-weight:800;">${product.description}</p>
+                <div class="product-footer">
+                    <span class="product-price">$${product.price.toLocaleString()}</span>
+                    <div class="product-actions">
+                        ${
+                            quantity > 0
+                            ? `
+                                <button class="quantity-btn" onclick="decreaseQuantity(${product.id})">−</button>
+                                <span class="quantity-display">${quantity}</span>
+                                <button class="quantity-btn" onclick="increaseQuantity(${product.id})">+</button>
+                              `
+                            : `
+                                <button class="add-to-cart" onclick="addToCart(${product.id})" style="font-weight: 800; color: #FF3D17;">
+                                    <i class="fa-solid fa-cart-shopping"></i> Agregar
+                                </button>
+                              `
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+    // Actualizar botones de productos
+renderAllCategories();
+
+
+        // Mostrar categoría
+        function showCategory(categoryName) {
+            // Actualizar pestañas
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Mostrar contenido
+            document.querySelectorAll('.category-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`category-${categoryName}`).classList.add('active');
+            
+            currentCategory = categoryName;
+        }
+
+        // Agregar al carrito
+        function addToCart(productId) {
+    let product = null;
+
+    Object.values(productsByCategory).forEach(category => {
+        const found = category.products.find(p => p.id === productId);
+        if (found) product = found;
+    });
+
+    if (!product) return;
+
+    const existingItem = cart.find(item => item.id === productId);
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({ ...product, quantity: 1 });
+    }
+
+    updateCart();
+
+    // Animación de feedback con el ícono
+    const button = event.target.closest('button'); // Se asegura de tomar el botón
+    const originalHTML = button.innerHTML; // Guardar HTML original
+    button.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> ✓ Agregado';
+    setTimeout(() => {
+        button.innerHTML = originalHTML; // Restaurar con ícono
+    }, 1000);
+}
+
+            
+            // Buscar el producto en todas las categorías
+            Object.values(productsByCategory).forEach(category => {
+                const found = category.products.find(p => p.id === productId);
+                if (found) product = found;
+            });
+
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCart();
+            
+            // Animación de feedback
+            const button = event.target;
+            button.textContent = '✓ Agregado';
+            setTimeout(() => {
+                button.textContent = 'Agregar';
+            }, 1000);
+
+
+        // Actualizar carrito
+        function updateCart() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            cartCount.textContent = totalItems;
+            cartTotal.textContent = totalPrice.toLocaleString();
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem 0;">Tu carrito está vacío</p>';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div style="font-weight: 500;">${item.emoji} ${item.name}</div>
+                            <div style="color: #FF3D17; font-weight: bold; margin-top: 0.3rem;">${(item.price * item.quantity).toLocaleString()}</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="quantity-btn" onclick="decreaseQuantity(${item.id})">-</button>
+                            <span class="quantity-display">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="increaseQuantity(${item.id})">+</button>
+                            <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Aumentar cantidad
+        function increaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity++;
+                updateCart();
+            }
+        }
+
+        // Disminuir cantidad
+        function decreaseQuantity(productId) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity--;
+                } else {
+                    // Si la cantidad es 1, eliminar el producto
+                    removeFromCart(productId);
+                    return;
+                }
+                updateCart();
+            }
+        }
+
+        // Eliminar producto del carrito
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        // Toggle carrito modal
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('cart-modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Inicializar
+        renderAllCategories();
+    </script>
+
+    <script>
+  // Efecto: el header cambia al hacer scroll
+  window.addEventListener('scroll', function() {
+    const header = document.querySelector('header');
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+</script>
+
+<script>
+// === Enviar pedido formal por WhatsApp ===
+document.getElementById("btnPedido").addEventListener("click", function() {
+    if (cart.length === 0) {
+        alert("Tu carrito está vacío. Por favor agrega productos antes de realizar el pedido.");
+        return;
+    }
+
+    // Obtener datos del cliente
+    const nombre = document.getElementById("cliente-nombre").value.trim();
+    const direccion = document.getElementById("cliente-direccion").value.trim();
+    const telefono = document.getElementById("cliente-telefono").value.trim();
+
+    // Validar que los campos estén completos
+    if (!nombre || !direccion || !telefono) {
+        alert("Por favor completa todos los campos del formulario antes de realizar el pedido.");
+        return;
+    }
+
+    // Número de WhatsApp del negocio
+    const numeroWhatsApp = "573106563386"; // cámbialo por el tuyo
+
+    // Construir el mensaje formal
+    let mensaje = "Nuevo pedido desde FoodFlash:\n\n";
+    mensaje += `Cliente: ${nombre}\n`;
+    mensaje += `Teléfono: ${telefono}\n`;
+    mensaje += `Dirección de entrega: ${direccion}\n\n`;
+    mensaje += "Detalle del pedido:\n";
+
+    cart.forEach(item => {
+        mensaje += `- ${item.name} x${item.quantity} - $${(item.price * item.quantity).toLocaleString()}\n`;
+    });
+
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    mensaje += `\nTotal: $${total.toLocaleString()}\n\nGracias por tu pedido. En breve nos comunicaremos para confirmar.`;
+
+    // Enviar por WhatsApp
+    const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, "_blank");
+
+    // Vaciar carrito después del pedido (opcional)
+    cart = [];
+    updateCart();
+    toggleCart();
+});
+</script>
+
+
+
+
+</body>
+
+</html>
