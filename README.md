@@ -32,6 +32,10 @@ Aplicación para gestión y pedidos rápidos de comida.
 
 2.0	Oct 2025	Integración completa del flujo de pedidos, optimización y documentación técnica V2.
 
+2.1 Oct 2025 Implementacion de requisitos al prototipo de la web
+
+2.2 Oct 2025 Implementacion de via whatsapp para los consumidores
+
 ## 🚀 Objetivo del proyecto
 
 Aplicar los conocimientos de Git y GitHub para realizar trabajo colaborativo, gestionando ramas, commits y Pull Requests de manera organizada y profesional.
